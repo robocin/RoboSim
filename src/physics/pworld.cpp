@@ -17,6 +17,7 @@ Copyright (C) 2011, Parsian Robotic Center (eew.aut.ac.ir/~parsian/grsim)
 */
 
 #include "pworld.h"
+#include <iostream>
 
 PSurface::PSurface()
 {
@@ -32,29 +33,38 @@ bool PSurface::isIt(dGeomID i1, dGeomID i2)
 
 void nearCallback(void *data, dGeomID o1, dGeomID o2)
 {
+    
+    ((PWorld *)data)->nearcallbacks_count++;
+    std::cout << "----nearCallback-----" << ((PWorld *)data)->nearcallbacks_count << std::endl;
+    SSLConfig::GeometriesIDs().printGeomID(*((int *)(dGeomGetData(o1))));
+    std::cout <<" x ";
+    SSLConfig::GeometriesIDs().printGeomID(*((int *)(dGeomGetData(o2))));
+    std::cout << std::endl;
+
     ((PWorld *)data)->handleCollisions(o1, o2);
 }
 
 PWorld::PWorld(dReal dt, dReal gravity, int _robot_count)
 {
-    robot_count = _robot_count;
+    this->robot_count = _robot_count;
     dInitODE2(0);
     dAllocateODEDataForThread(dAllocateMaskAll);
-    world = dWorldCreate();
-    space = dHashSpaceCreate(nullptr);
-    contactgroup = dJointGroupCreate(0);
-    dWorldSetGravity(world, 0, 0, -gravity);
-    objects_count = 0;
-    sur_matrix = nullptr;
+    this->world = dWorldCreate();
+    this->space = dHashSpaceCreate(nullptr);
+    // this->space = dSimpleSpaceCreate(nullptr);
+    this->contactgroup = dJointGroupCreate(0);
+    dWorldSetGravity(this->world, 0, 0, -gravity);
+    this->objects_count = 0;
+    this->sur_matrix = nullptr;
     //dAllocateODEDataForThread(dAllocateMaskAll);
-    delta_time = dt;
+    this->delta_time = dt;
 }
 
 PWorld::~PWorld()
 {
-    dJointGroupDestroy(contactgroup);
-    dSpaceDestroy(space);
-    dWorldDestroy(world);
+    dJointGroupDestroy(this->contactgroup);
+    dSpaceDestroy(this->space);
+    dWorldDestroy(this->world);
     dCloseODE();
 }
 
@@ -105,7 +115,7 @@ void PWorld::handleCollisions(dGeomID o1, dGeomID o2)
     }
 }
 
-void PWorld::addObject(PObject *o)
+int PWorld::addObject(PObject *o)
 {
     int id = objects.count();
     o->id = id;
@@ -116,6 +126,7 @@ void PWorld::addObject(PObject *o)
     o->init();
     dGeomSetData(o->geom, (void *)(&(o->id)));
     objects.append(o);
+    return id;
 }
 
 void PWorld::initAllObjects()
@@ -180,7 +191,9 @@ void PWorld::step(dReal dt, bool sync)
 {
     try
     {
+        this->nearcallbacks_count = 0;
         dSpaceCollide(space, this, &nearCallback);
+        std::cout << "near callback count: " << this->nearcallbacks_count << std::endl;
         dWorldSetQuickStepNumIterations(world, 20);
         if (sync)
             dWorldQuickStep(world, (dt < 0) ? delta_time : dt);

@@ -22,6 +22,8 @@ Copyright (C) 2011, Parsian Robotic Center (eew.aut.ac.ir/~parsian/grsim)
 #include "pobject.h"
 #include <QMap>
 #include <QVector>
+#include "../sslconfig.h"
+
 
 class PSurface;
 class PWorld
@@ -35,10 +37,11 @@ private:
     int objects_count;
 
 public:
+    int nearcallbacks_count;
     PWorld(dReal dt, dReal gravity, int robot_count);
     ~PWorld();
     void setGravity(dReal gravity);
-    void addObject(PObject *o);
+    int addObject(PObject *o);
     void initAllObjects();
     PSurface *createSurface(PObject *o1, PObject *o2);
     PSurface* createOneWaySurface(PObject* o1,PObject* o2);

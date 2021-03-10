@@ -237,6 +237,88 @@ namespace SSLConfig
 
     };
 
+    class GeometriesIDs
+    {
+        private:
+            int nRobotsBlue = 1;
+        public:
+            void printGeomID(int id) {
+                int rbt_id;
+                std::string team;
+
+                if (id > 11) {
+                    rbt_id = ((id - 12)/6);
+                    if (rbt_id < this->nRobotsBlue){
+                        team = "blue";
+                        rbt_id = rbt_id;
+                    } else {
+                        team = "yellow";
+                        rbt_id = rbt_id - this->nRobotsBlue;
+                    }
+                    id = ((id - 12)%6) + 12;
+                }
+
+                switch (id) {
+                    case 0 :
+                        std::cout << "ground";
+                        break;
+                    case 1 :
+                        std::cout << "ball";
+                        break;
+                    case 2 :
+                        std::cout << "Top wall";
+                        break;
+                    case 3 :
+                        std::cout << "Bottom wall";
+                        break;
+                    case 4 :
+                        std::cout << "Right wall";
+                        break;
+                    case 5 :
+                        std::cout << "Left wall";
+                        break;
+                    case 6 :
+                        std::cout << "Right goal wall";
+                        break;
+                    case 7 :
+                        std::cout << "Right goal top wall";
+                        break;
+                    case 8 :
+                        std::cout << "Right goal bottom wall";
+                        break;
+                    case 9 :
+                        std::cout << "Left goal wall";
+                        break;
+                    case 10 :
+                        std::cout << "Left goal top wall";
+                        break;
+                    case 11 :
+                        std::cout << "Left goal bottom wall";
+                        break;
+                    case 12 :
+                        std::cout << team << " robot " << rbt_id << " chassis";
+                        break;
+                    case 13 :
+                        std::cout << team << " robot " << rbt_id << " kicker";
+                        break;
+                    case 14 :
+                        std::cout << team << " robot " << rbt_id << " wheel 0";
+                        break;
+                    case 15 :
+                        std::cout << team << " robot " << rbt_id << " wheel 1";
+                        break;
+                    case 16 :
+                        std::cout << team << " robot " << rbt_id << " wheel 2";
+                        break;
+                    case 17 :
+                        std::cout << team << " robot " << rbt_id << " wheel 3";
+                        break;
+                    default:
+                        std::cout << rbt_id << team << std::endl;
+                        break;
+                }
+            }
+    };
 } // namespace Config
 
 #endif

@@ -19,9 +19,6 @@ Copyright (C) 2011, Parsian Robotic Center (eew.aut.ac.ir/~parsian/grsim)
 #include "sslworld.h"
 #include "sslconfig.h"
 
-#include <QtGlobal>
-#include <QtNetwork>
-
 #include <cstdlib>
 #include <ctime>
 #include <math.h>
@@ -220,36 +217,46 @@ void SSLWorld::initWalls()
     const double gsiz_z = this->field.getGoalHeight();
     const double gpos2_x = (this->field.getFieldLength() + gsiz_x) / 2.0;
 
+    // Top wall
     this->walls[0] = new PFixedBox(thick/2, pos_y, pos_z,
                              siz_x, thick, siz_z);
 
+    // Bottom wall
     this->walls[1] = new PFixedBox(-thick/2, -pos_y, pos_z,
                              siz_x, thick, siz_z);
     
+    // Right wall
     this->walls[2] = new PFixedBox(pos_x, -thick/2, pos_z,
                              thick, siz_y, siz_z);
 
+    // Left wall
     this->walls[3] = new PFixedBox(-pos_x, thick/2, pos_z,
                              thick, siz_y, siz_z);
 
     // Goal walls
     
+    // Right goal wall
     this->walls[4] = new PFixedBox(gpos_x, 0.0, gpos_z,
                              gthick, gsiz_y, gsiz_z);
     
-    this->walls[5] = new PFixedBox(gpos2_x, -gpos_y, gpos_z,
+    // Right goal top wall
+    this->walls[5] = new PFixedBox(gpos2_x, gpos_y, gpos_z,
                              gsiz_x, gthick, gsiz_z);
     
-    this->walls[6] = new PFixedBox(gpos2_x, gpos_y, gpos_z,
+    // Right goal bottom wall
+    this->walls[6] = new PFixedBox(gpos2_x, -gpos_y, gpos_z,
                              gsiz_x, gthick, gsiz_z);
 
+    // Left goal wall
     this->walls[7] = new PFixedBox(-gpos_x, 0.0, gpos_z,
                              gthick, gsiz_y, gsiz_z);
     
-    this->walls[8] = new PFixedBox(-gpos2_x, -gpos_y, gpos_z,
+    // Left goal top wall
+    this->walls[8] = new PFixedBox(-gpos2_x, gpos_y, gpos_z,
                              gsiz_x, gthick, gsiz_z);
     
-    this->walls[9] = new PFixedBox(-gpos2_x, gpos_y, gpos_z,
+    // Left goal bottom wall
+    this->walls[9] = new PFixedBox(-gpos2_x, -gpos_y, gpos_z,
                              gsiz_x, gthick, gsiz_z);
 }
 
