@@ -296,38 +296,38 @@ void PWorld::step(dReal dt, bool sync)
         std::chrono::steady_clock::time_point begin2 = std::chrono::steady_clock::now();
         dSpaceCollide2(this->ball->geom, this->ground->geom, this, &nearCallback);
         std::chrono::steady_clock::time_point end2 = std::chrono::steady_clock::now();
-        std::cout << "time Ball with ground: " << std::chrono::duration_cast<std::chrono::milliseconds>(end1 - begin1).count() << std::endl;
+        std::cout << "time Ball with ground: " << std::chrono::duration_cast<std::chrono::milliseconds>(end2 - begin2).count() << std::endl;
 
         // // Collide ball with kicker
 
         std::chrono::steady_clock::time_point begin3 = std::chrono::steady_clock::now(); 
         dSpaceCollide2(this->ball->geom, (dGeomID)this->spaceKicker, this, &nearCallback);
         std::chrono::steady_clock::time_point end3 = std::chrono::steady_clock::now();
-        std::cout << "time ball with kicker: " << std::chrono::duration_cast<std::chrono::milliseconds>(end1 - begin1).count() << std::endl;
+        std::cout << "time ball with kicker: " << std::chrono::duration_cast<std::chrono::milliseconds>(end3 - begin3).count() << std::endl;
 
         // Collide ball with chassis
         std::chrono::steady_clock::time_point begin4 = std::chrono::steady_clock::now(); 
         dSpaceCollide2(this->ball->geom, (dGeomID)this->spaceChassis, this, &nearCallback);
         std::chrono::steady_clock::time_point end4 = std::chrono::steady_clock::now();
-        std::cout << "time ball with chassis: " << std::chrono::duration_cast<std::chrono::milliseconds>(end1 - begin1).count() << std::endl;
+        std::cout << "time ball with chassis: " << std::chrono::duration_cast<std::chrono::milliseconds>(end4 - begin4).count() << std::endl;
 
         // Collide ball with wall
         std::chrono::steady_clock::time_point begin5 = std::chrono::steady_clock::now(); 
         dSpaceCollide2(this->ball->geom, (dGeomID)this->spaceWall, this, &nearCallback);
         std::chrono::steady_clock::time_point end5 = std::chrono::steady_clock::now();
-        std::cout << "time ball with wall: " << std::chrono::duration_cast<std::chrono::milliseconds>(end1 - begin1).count() << std::endl;
+        std::cout << "time ball with wall: " << std::chrono::duration_cast<std::chrono::milliseconds>(end5 - begin5).count() << std::endl;
 
         // Collide chassis with wall
         std::chrono::steady_clock::time_point begin6 = std::chrono::steady_clock::now(); 
         dSpaceCollide2((dGeomID)this->spaceChassis, (dGeomID)this->spaceWall, this, &nearCallback);
         std::chrono::steady_clock::time_point end6 = std::chrono::steady_clock::now();
-        std::cout << "time chassis with wall: " << std::chrono::duration_cast<std::chrono::milliseconds>(end1 - begin1).count() << std::endl;
+        std::cout << "time chassis with wall: " << std::chrono::duration_cast<std::chrono::milliseconds>(end6 - begin6).count() << std::endl;
 
         // Collide chassis with chassis
-        std::chrono::steady_clock::time_point begin4 = std::chrono::steady_clock::now(); 
+        std::chrono::steady_clock::time_point begin7 = std::chrono::steady_clock::now(); 
         dSpaceCollide(this->spaceChassis, this, &nearCallback);
-        std::chrono::steady_clock::time_point end3 = std::chrono::steady_clock::now();
-        std::cout << "time chassis with chassis: " << std::chrono::duration_cast<std::chrono::milliseconds>(end1 - begin1).count() << std::endl;
+        std::chrono::steady_clock::time_point end7 = std::chrono::steady_clock::now();
+        std::cout << "time chassis with chassis: " << std::chrono::duration_cast<std::chrono::milliseconds>(end7 - begin7).count() << std::endl;
 
         std::cout << "near callback count: " << this->nearcallbacks_count << std::endl;
         dWorldSetQuickStepNumIterations(world, 20);
