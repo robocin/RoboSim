@@ -21,6 +21,18 @@ extern "C"
         }
         world->step(world->getTimeStep(), actions);
     }
+    void step_wheel(SSLWorld *world, double *act)
+    {
+        std::vector<double*> actions;
+        actions.clear();
+        for (int i = 0; i < world->field.getRobotsCount(); i++)
+        {
+            double *a = new double[4];
+            for(int j = 0; j < 4; j++) a[j] = act[i*4 + j];
+            actions.push_back(a);
+        }
+        world->step(world->getTimeStep(), actions);
+    }
     void getState(SSLWorld *world, double *state_data)
     {
         const std::vector<double> state = world->getState();

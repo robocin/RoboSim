@@ -15,6 +15,8 @@ robosim_lib.delWorld.argtypes = [c_void_p]
 robosim_lib.delWorld.restype = None
 robosim_lib.step.argtypes = [c_void_p, c_void_p]
 robosim_lib.step.restype = None
+robosim_lib.step_wheel.argtypes = [c_void_p, c_void_p]
+robosim_lib.step_wheel.restype = None
 robosim_lib.getState.argtypes = [c_void_p, c_void_p]
 robosim_lib.getState.restype = None
 robosim_lib.getFieldParams.argtypes = [c_void_p, c_void_p]
@@ -143,6 +145,25 @@ class SimulatorSSL():
         action = np.array(action, dtype=np.float64)
         action = action.flatten()
         robosim_lib.step(self.world, as_ctypes(action))
+    
+    def step_wheel(self, action: np.ndarray) -> None:
+        '''
+        Steps the simulator given an action.
+
+        Parameters
+        ----------
+        action: np.ndarray
+            Action of shape (n_robots, 4),
+            4 wheels' speed for each robot.
+
+        Returns
+        -------
+        None
+
+        '''
+        action = np.array(action, dtype=np.float64)
+        action = action.flatten()
+        robosim_lib.step_wheel(self.world, as_ctypes(action))
 
     def reset(self,
               ball_pos: np.ndarray,

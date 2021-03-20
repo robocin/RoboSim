@@ -211,7 +211,7 @@ namespace SSLConfig
         double radius = 0.090;
         double height = 0.147;
         double bottomHeight = 0.020;
-        double wheelRadius = 0.027;
+        double wheelRadius = 0.02425;
         double wheelThickness = 0.005;
         double bodyMass = 2.000;
         double wheelMass = 0.200;
