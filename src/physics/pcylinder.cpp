@@ -21,26 +21,29 @@ Copyright (C) 2011, Parsian Robotic Center (eew.aut.ac.ir/~parsian/grsim)
 PCylinder::PCylinder(dReal x, dReal y, dReal z, dReal radius, dReal length, dReal mass)
     : PObject(x, y, z, mass)
 {
-  m_radius = radius;
-  m_length = length;
+  this->m_radius = radius;
+  this->m_length = length;
 }
 
 PCylinder::~PCylinder() = default;
 
 void PCylinder::setMass(dReal mass)
 {
-  m_mass = mass;
+  this->m_mass = mass;
   dMass m;
-  dMassSetCylinderTotal(&m, m_mass, 1, m_radius, m_length);
-  dBodySetMass(body, &m);
+  dMassSetCylinderTotal(&m, this->m_mass, 1, this->m_radius, -this->m_length/2.);
+  dBodySetMass(this->body, &m);
 }
 
 void PCylinder::init()
 {
-  body = dBodyCreate(world);
+  this->m_z = this->m_z - this->m_length/4.; // offset body center of gravity
+  this->body = dBodyCreate(this->world);
   initPosBody();
-  setMass(m_mass);
-  geom = dCreateCylinder(nullptr, m_radius, m_length);
-  dGeomSetBody(geom, body);
-  dSpaceAdd(space, geom);
+  this->m_z = this->m_z + this->m_length/4.; //offset
+  setMass(this->m_mass);
+  this->geom = dCreateCylinder(nullptr, this->m_radius, this->m_length);
+  dGeomSetBody(this->geom, this->body);
+  dGeomSetOffsetPosition(geom, 0.0f, 0.0f, -m_length/4.); // offset
+  dSpaceAdd(this->space, this->geom);
 }
