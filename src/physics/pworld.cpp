@@ -53,7 +53,7 @@ PWorld::PWorld(dReal dt, dReal gravity, int _robot_count)
     this->objects_count = 0;
     this->sur_matrix = nullptr;
     //dAllocateODEDataForThread(dAllocateMaskAll);
-    delta_time = dt;
+    this->timeStep = dt;
 }
 
 PWorld::~PWorld()
@@ -306,9 +306,9 @@ void PWorld::step(dReal dt, bool sync)
 
         dWorldSetQuickStepNumIterations(world, 20);
         if (sync)
-            dWorldQuickStep(world, (dt < 0) ? delta_time : dt);
+            dWorldQuickStep(world, (dt < 0) ? this->timeStep : dt);
         else
-            dWorldStep(world, (dt < 0) ? delta_time : dt);
+            dWorldStep(world, (dt < 0) ? this->timeStep : dt);
         dJointGroupEmpty(contactgroup);
     }
     catch (...)

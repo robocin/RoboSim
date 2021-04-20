@@ -374,16 +374,68 @@ void SSLRobot::setWheelDesiredAngularSpeed(int i, dReal s)
 }
 
 void SSLRobot::setDesiredSpeedLocal(dReal vx, dReal vy, dReal vw)
-{
+{   
+    dReal VelAbsoluteMax = 2.5;
+    dReal VelAngularMax = 10;
+    dReal AccAbsoluteMax = (3 / SSLConfig::Robot().getWheelRadius()) * this->physics->getTimeStep();
+
+    dReal v = sqrt(vx * vx + vy * vy);
+    if (v > VelAbsoluteMax) {
+        vx *= VelAbsoluteMax / v;
+        vy *= VelAbsoluteMax / v;
+        v = VelAbsoluteMax;
+    }
+    if (abs(vw) > VelAngularMax) {
+        vw = copysign(VelAngularMax, vw);
+    }
+
+    dReal x, y, z;
+    this->chassis->getBodyDirection(x, y, z);
+
+    dReal dot = x; //zarb dar (1.0,0.0,0.0)
+    auto angle = (dReal)(acos((dReal)(dot)));
+    angle = (y > 0) ? angle : -angle;
+    std::cout << angle << std::endl;
+    const dReal* cvv = dBodyGetLinearVel(chassis->body);
+    dReal cvx = cvv[0]*cos(angle) + cvv[1]*sin(angle);
+    dReal cvy = -cvv[0]*sin(angle) + cvv[1]*cos(angle);
+
+    const dReal* cvvw = dBodyGetAngularVel(chassis->body);
+    dReal cvw = cvvw[2];
+
     // Calculate Motor Speeds
     dReal _DEG2RAD = M_PI / 180.0;
     dReal motorAlpha[4] = {SSLConfig::Robot().getWheel0Angle() * _DEG2RAD, SSLConfig::Robot().getWheel1Angle() * _DEG2RAD, SSLConfig::Robot().getWheel2Angle() * _DEG2RAD, SSLConfig::Robot().getWheel3Angle() * _DEG2RAD};
+
+    // Convert local robot speed to rad/s
+    dReal cdw0 =  (1.0 / SSLConfig::Robot().getWheelRadius()) * (( (SSLConfig::Robot().getRadius() * cvw) - (cvx * sin(motorAlpha[0])) + (cvy * cos(motorAlpha[0]))) );
+    dReal cdw1 =  (1.0 / SSLConfig::Robot().getWheelRadius()) * (( (SSLConfig::Robot().getRadius() * cvw) - (cvx * sin(motorAlpha[1])) + (cvy * cos(motorAlpha[1]))) );
+    dReal cdw2 =  (1.0 / SSLConfig::Robot().getWheelRadius()) * (( (SSLConfig::Robot().getRadius() * cvw) - (cvx * sin(motorAlpha[2])) + (cvy * cos(motorAlpha[2]))) );
+    dReal cdw3 =  (1.0 / SSLConfig::Robot().getWheelRadius()) * (( (SSLConfig::Robot().getRadius() * cvw) - (cvx * sin(motorAlpha[3])) + (cvy * cos(motorAlpha[3]))) );
 
     // Convert local robot speed to rad/s
     dReal dw0 =  (1.0 / SSLConfig::Robot().getWheelRadius()) * (( (SSLConfig::Robot().getRadius() * vw) - (vx * sin(motorAlpha[0])) + (vy * cos(motorAlpha[0]))) );
     dReal dw1 =  (1.0 / SSLConfig::Robot().getWheelRadius()) * (( (SSLConfig::Robot().getRadius() * vw) - (vx * sin(motorAlpha[1])) + (vy * cos(motorAlpha[1]))) );
     dReal dw2 =  (1.0 / SSLConfig::Robot().getWheelRadius()) * (( (SSLConfig::Robot().getRadius() * vw) - (vx * sin(motorAlpha[2])) + (vy * cos(motorAlpha[2]))) );
     dReal dw3 =  (1.0 / SSLConfig::Robot().getWheelRadius()) * (( (SSLConfig::Robot().getRadius() * vw) - (vx * sin(motorAlpha[3])) + (vy * cos(motorAlpha[3]))) );
+
+    dReal highest = 0.;
+    highest = (abs(dw0 - cdw0) > highest) ? abs(dw0 - cdw0) : highest;
+    highest = (abs(dw1 - cdw1) > highest) ? abs(dw1 - cdw1) : highest;
+    highest = (abs(dw2 - cdw2) > highest) ? abs(dw2 - cdw2) : highest;
+    highest = (abs(dw3 - cdw3) > highest) ? abs(dw3 - cdw3) : highest;
+
+    if (highest > AccAbsoluteMax) {
+        dw0 = cdw0 + ((dw0 - cdw0) / highest) * AccAbsoluteMax;
+        dw1 = cdw1 + ((dw1 - cdw1) / highest) * AccAbsoluteMax;
+        dw2 = cdw2 + ((dw2 - cdw2) / highest) * AccAbsoluteMax;
+        dw3 = cdw3 + ((dw3 - cdw3) / highest) * AccAbsoluteMax;
+    }
+
+    // std::cout << "\ndw0: " << dw0 << " cdw0: " << cdw0 << std::endl;
+    // std::cout << "dw1: " << dw1 << " cdw1: " << cdw1 << std::endl;
+    // std::cout << "dw2: " << dw2 << " cdw2: " << cdw2 << std::endl;
+    // std::cout << "dw3: " << dw3 << " cdw3: " << cdw3 << std::endl;
 
     setWheelDesiredAngularSpeed(0 , dw0);
     setWheelDesiredAngularSpeed(1 , dw1);

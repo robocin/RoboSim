@@ -30,7 +30,7 @@ private:
     dJointGroupID contactgroup;
     QVector<PObject *> objects;
     QVector<PSurface *> surfaces;
-    dReal delta_time;
+    dReal timeStep;
     int **sur_matrix;
     int objects_count;
 
@@ -45,6 +45,7 @@ public:
     int addWheelObject(PObject* o);
     int addChassisObject(PObject* o);
     int addKickerObject(PObject* o);
+    dReal getTimeStep() {return this->timeStep;};
     void initAllObjects();
     PSurface *createSurface(PObject *o1, PObject *o2);
     PSurface* createOneWaySurface(PObject* o1,PObject* o2);

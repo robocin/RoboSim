@@ -156,7 +156,7 @@ namespace SSLConfig
         double wheelMass = 0.050;
         double wheelTangentFriction = 0.800;
         double wheelPerpendicularFriction = 0.050;
-        double wheelMotorMaxTorque = 0.070; // Maxon EC45 flat 50w with 18:60 gear ratio, reduced to 3m/s2 accel
+        double wheelMotorMaxTorque = 0.373; // Maxon EC45 flat 50w with 18:60 gear ratio
         double wheelMotorMaxRPM = 1557.0; // Maxon EC45 flat 50w with 18:60 gear ratio
         
         double distanceCenterKicker = 0.081;
