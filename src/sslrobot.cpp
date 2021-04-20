@@ -395,7 +395,6 @@ void SSLRobot::setDesiredSpeedLocal(dReal vx, dReal vy, dReal vw)
     dReal dot = x; //zarb dar (1.0,0.0,0.0)
     auto angle = (dReal)(acos((dReal)(dot)));
     angle = (y > 0) ? angle : -angle;
-    std::cout << angle << std::endl;
     const dReal* cvv = dBodyGetLinearVel(chassis->body);
     dReal cvx = cvv[0]*cos(angle) + cvv[1]*sin(angle);
     dReal cvy = -cvv[0]*sin(angle) + cvv[1]*cos(angle);
